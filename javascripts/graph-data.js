@@ -59,7 +59,7 @@ node.append("svg:image")
     .attr("dy", ".25em");
 
 node.append("title")
-    .text(function(d) { return d.country; });
+    .text(function(d) { return d.country+'\n'+d.count+' users'; });
 
 force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
