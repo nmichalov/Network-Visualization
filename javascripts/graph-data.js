@@ -1,7 +1,10 @@
+data = [{x:300,y:300,count:30,country:"China"},
+        {x:100,y:100,count:10,country:"USA"},
+        {x:450,y:475,count:10,country:"UK"}];
+
 var width = 960,
     height = 500,
     fill = d3.scale.category20(),
-    nodes = [],//{x:300,y:350}, {x:275,y:320}, {x:298,y:400}], //enter user nodes here
     links = []; //enter user link data here
 
 var vis = d3.select("body").append("svg:svg")
@@ -13,9 +16,10 @@ vis.append("svg:rect")
     .attr("height", height);
 
 var force = d3.layout.force()
-    .nodes(nodes)
+    .nodes(data)
     .links(links)
-    .size([width, height]);
+    .size([width, height])
+    .linkDistance(70);
 
 var cursor = vis.append("svg:rect")
     .attr("width", 2)
@@ -39,24 +43,21 @@ vis.on("mousemove", function() {
     cursor.attr("transform", "translate(" + d3.svg.mouse(this) + ")");
 });
 
-vis.on("mousedown", function() {
-    //for (i=0;i=10;i++) {
-        var point = d3.svg.mouse(this),
-            node = {x: point[0], y: point[1]},
-        n = nodes.push(node);
-
-    nodes.forEach(function(target) {
-        console.log(target);
-        var x = target.x - node.x,
-            y = target.y - node.y;
-        if (Math.sqrt(x * x + y * y) < 30) { //link distance
-            links.push({source: node, target: target});
-            //console.log(links);
-        }
-    });//*/
-    restart();
-    //;}
+vis.on("mouseover", function() {
+    var flag = d3.select(this);
+    console.log(flag);
 });
+
+
+vis.on("mousedown", function() {
+    data.forEach(function(target) {
+        for (i=0;i<data.length;i++) {
+            links.push({source: data[i], target: target});
+        ;}
+    });
+    restart();
+});
+
 
 function restart() {
     vis.selectAll("line.link")
@@ -69,14 +70,18 @@ function restart() {
         .attr("y2", function(d) { return d.target.y; });
 
     vis.selectAll("rect.node")
-        .data(nodes)
+        .data(data)
       .enter().insert("svg:rect", "rect.cursor")
         .attr("class", "node")
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
-        .attr("height", 10)
-        .attr("width", 10)
+        .attr("height", function(d) { return d.count   })
+        .attr("width",  function(d) { return 2*d.count })
+        .attr("title",  function(d) { return d.country })
         .call(force.drag);
 
     force.start();
-}
+};
+
+//node.append("title")
+  //  .text(function(d) {return d.country; });
