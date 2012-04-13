@@ -1,11 +1,10 @@
-data = [{count:50,country:"Lantern",flag:"imgs/Lantern.png"},
+data = [{count:70,country:"Lantern",flag:"imgs/Lantern.png"},
         {count:30,country:"China",flag:"imgs/China.png"},
-        {count:10,country:"USA",flag:"imgs/USA.png"},
-        {count:10,country:"UK",flag:"imgs/UK.png"}];
+        {count:20,country:"USA",flag:"imgs/USA.png"},
+        {count:20,country:"UK",flag:"imgs/UK.png"}];
 
-var width = 960,
+var width = 1100,
     height = 500,
-    //fill = d3.scale.category20(),
     links = [];
 
 data.forEach(function(target) {
@@ -14,7 +13,7 @@ data.forEach(function(target) {
 
 console.log(links);
 
-var vis = d3.select("body").append("svg:svg")
+var vis = d3.select(".container").append("svg:svg")
     .attr("width", width)
     .attr("height", height);
 
@@ -26,7 +25,7 @@ var force = d3.layout.force()
     .nodes(data)
     .links(links)
     .size([width, height])
-    .linkDistance(80)
+    .linkDistance(100)
     .charge(-120)
     .start();
 
