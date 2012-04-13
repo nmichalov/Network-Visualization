@@ -1,8 +1,11 @@
+var giveCount = 10, //use these var as dummy data
+    getCount = 30;
+
 var width = 960,
     height = 500,
     fill = d3.scale.category20(),
-    nodes = [],
-    links = [];
+    nodes = [],//{x:300,y:350}, {x:275,y:320}, {x:298,y:400}], //enter user nodes here
+    links = []; //enter user link data here
 
 var vis = d3.select("body").append("svg:svg")
     .attr("width", width)
@@ -39,19 +42,22 @@ vis.on("mousemove", function() {
 });
 
 vis.on("mousedown", function() {
-    var point = d3.svg.mouse(this),
-        node = {x: point[0], y: point[1]},
-    n = nodes.push(node);
+    //for (i=0;i=10;i++) {
+        var point = d3.svg.mouse(this),
+            node = {x: point[0], y: point[1]},
+        n = nodes.push(node);
 
     nodes.forEach(function(target) {
-        var x = target.x - node.x,
-            y = target.y - node.y;
-        if (Math.sqrt(x * x + y * y) < 30) {
+        console.log(target);
+        var x = 5*target.x - node.x,
+            y = 5*target.y - node.y;
+        //if (Math.sqrt(x * x + y * y) < 30) {
             links.push({source: node, target: target});
-        }
-    });
-
+            //console.log(links);
+        //}
+    });//*/
     restart();
+    //;}
 });
 
 function restart() {
@@ -70,7 +76,7 @@ function restart() {
         .attr("class", "node")
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; })
-        .attr("r", 5)
+        .attr("r", 7)
         .call(force.drag);
 
     force.start();
