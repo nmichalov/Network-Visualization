@@ -28,25 +28,8 @@ var force = d3.layout.force()
     .linkDistance(70)
     .start();
 
-//var cursor = vis.append("svg:rect")
-//    .attr("width", 2)
-//    .attr("height", 2)
-//    .attr("transform", "translate(-100,100)")
-//    .attr("class", "cursor");
-
-
-    
-
-
-//vis.on("mousemove", function() {
-//    cursor.attr("transform", "translate(" + d3.svg.mouse(this) + ")");
-//});
-
-
-
 var link = vis.selectAll("line.link")
     .data(links)
-  //.enter().insert("svg:line", "rect.node")
   .enter().append("svg:line")
     .attr("class", "link")
     .attr("x1", function(d) { return d.source.x; })
@@ -56,7 +39,6 @@ var link = vis.selectAll("line.link")
 
 var node = vis.selectAll("g.node")
     .data(data)
-  //.enter().insert("svg:rect", "rect.cursor")
   .enter().append("svg:g")
     .attr("class", "node")
     .call(force.drag);
@@ -68,11 +50,8 @@ node.append("svg:image")
     .attr("y", "-8px")//function(d) { return d.y; })
     .attr("height", function(d) { return d.count   })
     .attr("width",  function(d) { return 2*d.count })//;
-//node.append("svg:text")
-//    .attr("class", "nodetext")
     .attr("dx", 12)
     .attr("dy", ".35em");
-//    .text(function(d) { return d.country });
 
 force.on("tick", function() {
    link.attr("x1", function(d) { return d.source.x; })
