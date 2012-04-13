@@ -1,6 +1,3 @@
-var giveCount = 10, //use these var as dummy data
-    getCount = 30;
-
 var width = 960,
     height = 500,
     fill = d3.scale.category20(),
@@ -20,9 +17,10 @@ var force = d3.layout.force()
     .links(links)
     .size([width, height]);
 
-var cursor = vis.append("svg:circle")
-    .attr("r", 1)
-    .attr("transform", "translate(-100,-100)")
+var cursor = vis.append("svg:rect")
+    .attr("width", 2)
+    .attr("height", 2)
+    .attr("transform", "translate(-100,100)")
     .attr("class", "cursor");
 
 force.on("tick", function() {
@@ -32,9 +30,9 @@ force.on("tick", function() {
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
-    vis.selectAll("circle.node")
-        .attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
+    vis.selectAll("rect.node")
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; });
 });
 
 vis.on("mousemove", function() {
@@ -49,12 +47,12 @@ vis.on("mousedown", function() {
 
     nodes.forEach(function(target) {
         console.log(target);
-        var x = 5*target.x - node.x,
-            y = 5*target.y - node.y;
-        //if (Math.sqrt(x * x + y * y) < 30) {
+        var x = target.x - node.x,
+            y = target.y - node.y;
+        if (Math.sqrt(x * x + y * y) < 30) { //link distance
             links.push({source: node, target: target});
             //console.log(links);
-        //}
+        }
     });//*/
     restart();
     //;}
@@ -63,20 +61,21 @@ vis.on("mousedown", function() {
 function restart() {
     vis.selectAll("line.link")
         .data(links)
-      .enter().insert("svg:line", "circle.node")
+      .enter().insert("svg:line", "rect.node")
         .attr("class", "link")
         .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
-    vis.selectAll("circle.node")
+    vis.selectAll("rect.node")
         .data(nodes)
-      .enter().insert("svg:circle", "circle.cursor")
+      .enter().insert("svg:rect", "rect.cursor")
         .attr("class", "node")
-        .attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; })
-        .attr("r", 7)
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("height", 10)
+        .attr("width", 10)
         .call(force.drag);
 
     force.start();
