@@ -18,7 +18,7 @@ var force = d3.layout.force()
     .size([width, height]);
 
 var cursor = vis.append("svg:circle")
-    .attr("r", 30)
+    .attr("r", 1)
     .attr("transform", "translate(-100,-100)")
     .attr("class", "cursor");
 
