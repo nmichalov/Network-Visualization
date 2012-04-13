@@ -1,7 +1,11 @@
 data = [{count:70,country:"Lantern",flag:"imgs/Lantern.png"},
         {count:30,country:"China",flag:"imgs/China.png"},
         {count:20,country:"USA",flag:"imgs/USA.png"},
-        {count:20,country:"UK",flag:"imgs/UK.png"}];
+        {count:20,country:"UK",flag:"imgs/UK.png"},
+        {count:15,country:"Australia",flag:"imgs/Australia.png"},
+        {count:12,country:"Brazil",flag:"imgs/Brazil.png"},
+        {count:3,country:"Iran",flag:"imgs/Iran.svg"},
+        {count:6,country:"North Korea",flag:"imgs/NorthKorea.png"}];
 
 var width = 910,
     height = 300,
@@ -53,6 +57,9 @@ node.append("svg:image")
     .attr("width",  function(d) { return d.count;  })
     .attr("dx", 9)
     .attr("dy", ".25em");
+
+node.append("title")
+    .text(function(d) { return d.country; });
 
 force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
