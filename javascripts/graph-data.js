@@ -1,6 +1,7 @@
-data = [{x:300,y:300,count:30,country:"China",flag:"imgs/China.png"},
-        {x:100,y:100,count:10,country:"USA",flag:"imgs/USA.png"},
-        {x:450,y:475,count:10,country:"UK",flag:"http://images3.wikia.nocookie.net/__cb20090205233127/fallout/images/b/b6/UK_Flag.png"}];
+data = [{count:50,country:"Lantern",flag:"imgs/Lantern.png"},
+        {count:30,country:"China",flag:"imgs/China.png"},
+        {count:10,country:"USA",flag:"imgs/USA.png"},
+        {count:10,country:"UK",flag:"imgs/UK.png"}];
 
 var width = 960,
     height = 500,
@@ -8,10 +9,10 @@ var width = 960,
     links = [];
 
 data.forEach(function(target) {
-    for (i=0;i<data.length;i++) {
-        links.push({source: data[i], target: target});
-    ;}
+        links.push({source: data[0], target: target});
 });
+
+console.log(links);
 
 var vis = d3.select("body").append("svg:svg")
     .attr("width", width)
@@ -25,7 +26,8 @@ var force = d3.layout.force()
     .nodes(data)
     .links(links)
     .size([width, height])
-    .linkDistance(70)
+    .linkDistance(80)
+    .charge(-120)
     .start();
 
 var link = vis.selectAll("line.link")
@@ -44,17 +46,17 @@ var node = vis.selectAll("g.node")
     .call(force.drag);
 
 node.append("svg:image")
-    .attr("class", "rect")
-    .attr("xlink:href", function(d) { return d.flag })
-    .attr("x", "-8px")//function(d) { return d.x; })
-    .attr("y", "-8px")//function(d) { return d.y; })
-    .attr("height", function(d) { return d.count   })
-    .attr("width",  function(d) { return 2*d.count })//;
-    .attr("dx", 12)
-    .attr("dy", ".35em");
+    .attr("class", "circle")
+    .attr("xlink:href", function(d) { return d.flag; })
+    .attr("x", function(d) { return -d.count/2; })
+    .attr("y", function(d) { return -d.count/2; })
+    .attr("height", function(d) { return d.count;  })
+    .attr("width",  function(d) { return d.count;  })
+    .attr("dx", 9)
+    .attr("dy", ".25em");
 
 force.on("tick", function() {
-   link.attr("x1", function(d) { return d.source.x; })
+    link.attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
