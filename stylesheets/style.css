@@ -5,21 +5,32 @@ body {
   overflow: hidden;
 }
 
+
+.svg {
+  background-image: url('../imgs/Space.png');
+}
+
 .container {
-  background: #555555;
-  height: 900px;
-  width: 1100px;
-  margin: auto;
+  height: 1100px;
+  width: 910px;
+  margin-left: auto;
+  margin-right: auto;
   overflow: hidden;
 }
 
-.header {
-  height: 50px;
-  margin-bottom: 5px;
+.data {
+  height: 300px;
+  width: 910px;
+}
+
+.footer {
+  height: 400px;
+  width: 910px;
   background: #000000;
-  width: auto;
-  text-align: center;
-  text-decoration: underline;
+  background-image: url('../imgs/Earth.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 50px;
 }
 
 .link {

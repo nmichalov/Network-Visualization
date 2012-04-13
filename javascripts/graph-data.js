@@ -3,8 +3,8 @@ data = [{count:70,country:"Lantern",flag:"imgs/Lantern.png"},
         {count:20,country:"USA",flag:"imgs/USA.png"},
         {count:20,country:"UK",flag:"imgs/UK.png"}];
 
-var width = 1100,
-    height = 500,
+var width = 910,
+    height = 300,
     links = [];
 
 data.forEach(function(target) {
@@ -13,7 +13,7 @@ data.forEach(function(target) {
 
 console.log(links);
 
-var vis = d3.select(".container").append("svg:svg")
+var vis = d3.select(".data").append("svg:svg")
     .attr("width", width)
     .attr("height", height);
 
