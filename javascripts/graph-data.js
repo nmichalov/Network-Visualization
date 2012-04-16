@@ -1,40 +1,30 @@
-/*data = [{count:106,country:"Lantern"},
-        {count:30,country:"China"},
-        {count:40,country:"USA"},
-        {count:30,country:"UK"},
-        {count:15,country:"Australia"},
-        {count:22,country:"Brazil"},
-        {count:33,country:"Iran"},
-        {count:26,country:"North Korea"}];
-*/
-
-var rawData = "/data.json"; 
+var rawData = "http://0.0.0.0:8888/data.json"; 
 
 var width = 910,
     height = 300,
     links = [];
 
 var force = d3.layout.force()
-    //.nodes(data)
-    //.links(links)
     .size([width, height])
     .linkDistance(100)
     .charge(-120);
-    //.start();
 
 var vis = d3.select(".data").append("svg:svg")
     .attr("width", width)
     .attr("height", height);
 
-
 vis.append("svg:rect")
     .attr("width", width)
     .attr("height", height);
 
-d3.json(rawData, function(json) {    
-    console.log(json);
-    data = json.data;
+$.getJSON("http://0.0.0.0:8888/data.json", function(jd) { 
+    var data = jd.data;
+    console.log(data);
 
+    data.forEach(function(target) {
+        links.push({source: data[0], target: target});
+    });
+ 
     var link = vis.selectAll("line.link")
         .data(links)
       .enter().append("svg:line")
@@ -49,11 +39,7 @@ d3.json(rawData, function(json) {
       .enter().append("svg:g")
         .attr("class", "node")
         .call(force.drag);
-
-    json.data.forEach(function(target) {
-        links.push({source: json.data[0], target: target});
-    });
-       
+      
     force
         .nodes(data)
         .links(links)
@@ -75,16 +61,14 @@ d3.json(rawData, function(json) {
         node.append("title")
             .text(function(d) { return d.country+'\n'+d.count+' users'; });
 
-       //force.on("tick", function() {
+       force.on("tick", function() {
         link.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });
 
         node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-    //});
+        });
     };
 });
-
-//force.start();
 
