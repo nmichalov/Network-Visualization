@@ -1,11 +1,11 @@
-data = [{count:70,country:"Lantern",flag:"imgs/Lantern.png"},
-        {count:30,country:"China",flag:"imgs/China.png"},
-        {count:20,country:"USA",flag:"imgs/USA.png"},
-        {count:20,country:"UK",flag:"imgs/UK.png"},
-        {count:15,country:"Australia",flag:"imgs/Australia.png"},
-        {count:12,country:"Brazil",flag:"imgs/Brazil.png"},
-        {count:3,country:"Iran",flag:"imgs/Iran.svg"},
-        {count:6,country:"North Korea",flag:"imgs/NorthKorea.png"}];
+data = [{count:106,country:"Lantern"},
+        {count:30,country:"China"},
+        {count:40,country:"USA"},
+        {count:30,country:"UK"},
+        {count:15,country:"Australia"},
+        {count:22,country:"Brazil"},
+        {count:33,country:"Iran"},
+        {count:26,country:"North Korea"}];
 
 var width = 910,
     height = 300,
@@ -50,7 +50,7 @@ var node = vis.selectAll("g.node")
 
 node.append("svg:image")
     .attr("class", "circle")
-    .attr("xlink:href", function(d) { return d.flag; })
+    .attr("xlink:href", function(d) { return "imgs/"+d.country; })
     .attr("x", function(d) { return -d.count/2; })
     .attr("y", function(d) { return -d.count/2; })
     .attr("height", function(d) { return d.count;  })
