@@ -1,5 +1,6 @@
 //Data URL
-var rawData  = "http://0.0.0.0:8888/data.json";
+var rawData1 = "http://0.0.0.0:8888/data.json",
+    rawData2 = "http://0.0.0.0:8888/data1.json";
 
 
 //Set Global Variables
@@ -12,12 +13,6 @@ var width  = 910,
 //Create Instance of Above Object for Graph's Central Node
 //And Push To graphNodes Array
 graphNodes[0] = {"name": "Lantern", "activity" : 70 };
-
-
-//Function For Processing The Incoming Data
-//function 
-
-
 
 //Initialize Visualization    
 var vis = d3.select(".data").append("svg:svg")
@@ -35,16 +30,28 @@ var force = d3.layout.force()
 
 //Get Initial Data And Create Graph
 //The Assumption Is That This Data Comes As An Array Of JSON Objects
-$.getJSON(rawData, function(data) {
-    $.each(data, function(key, val){
-        graphNodes.push(val);
-    });
+$.getJSON(rawData1, function(data) {
+   $.each(data, function(key, val){
+      if (!(graphNodes.hasOwnProperty(val))){
+          graphNodes.push(val);
+      }
+      else{
+          graphNodes[val].value = val.activity;
+      }
+   });
 
-    for (i=1;i<graphNodes.length;i++){
-        var arc  =  {"source": graphNodes[0], "target": graphNodes[i]}; 
-        if (!(graphLinks.hasOwnProperty(arc))){
-            graphLinks.push(arc);
-        }
+   for (i=1;i<graphNodes.length;i++){
+       var arc  =  {"source": graphNodes[0], "target": graphNodes[i]}; 
+       if ((graphNodes[i].activity) == 0){
+           if (graphLinks.hasOwnProperty(arc)){
+               graphLinks.splice(graphLinks.indexOf(arc),1);
+           }
+       }
+       else{
+           if (!(graphLinks.hasOwnProperty(arc))){
+               graphLinks.push(arc);
+            }
+        }  
     }
 
     force
@@ -86,4 +93,4 @@ $.getJSON(rawData, function(data) {
            .attr("y2", function(d) { return d.target.y; });
        node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
    });
-});
+})
