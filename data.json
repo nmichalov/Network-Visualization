@@ -1,7 +1,6 @@
-[{ "name": "China"       , "activity":   21},
- { "name": "USA"         , "activity":   34},
- { "name": "UK"          , "activity":   31},
- { "name": "Australia"   , "activity":   20},
- { "name": "Brazil"      , "activity":   24},
- { "name": "Iran"        , "activity":   30},
- { "name": "North Korea" , "activity":   26}]
+[{ "name": "China"       , "activity":   30},
+ { "name": "USA"         , "activity":   20},
+ { "name": "UK"          , "activity":   50},
+ { "name": "Australia"   , "activity":   30},
+ { "name": "Brazil"      , "activity":   15},
+ { "name": "North Korea" , "activity":   30}]
