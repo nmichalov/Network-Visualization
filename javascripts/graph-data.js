@@ -69,7 +69,7 @@ function visualizeData(data){
     force        
         .nodes(graphNodes) //assign graphNodes as node data
         .links(graphLinks) //assign graphLinks as link data
-        .linkDistance(function(d) { return (d.source.activity+d.target.activity)*5/7 })
+        .linkDistance(function(d) { return (d.source.activity+d.target.activity)*5/8 })
         .start();          //create d3 objects used to generate visualization
         
     var links = vis.selectAll("line.link").data(graphLinks); //create variable which identifies all link elements
