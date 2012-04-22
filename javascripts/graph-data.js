@@ -1,11 +1,9 @@
 //Data URL(s)
-var rawData1 = "http://0.0.0.0:8888/data.json",
-    rawData2 = "http://0.0.0.0:8888/data1.json";
-
+var dataURL =  'https://api.twitter.com/1/trends/available.json';
 
 //Set Global Variables
 var width  = 910,
-    height = 300
+    height = 300,
     hub    = "Total";
 
 
@@ -20,7 +18,6 @@ vis.append("svg:rect")
 
 var force = d3.layout.force()
     .size([width, height])
-    .linkDistance(150)
     .charge(-120);
 
 force.on("tick", function() {
@@ -36,78 +33,96 @@ force.on("tick", function() {
 
 //Get Data And Create Graph
 //The Assumption Is That This Data Comes As An Array Of JSON Objects
-function visualizeData(dataURL){
-    $.getJSON(dataURL, function(data) {  //get JSON array from URL
+$.ajax({
+    url: dataURL,
+    dataType: "jsonp",
+    jsonpCallback: "visualizeData"
+});
 
-        var graphNodes = data,           //save JSON objects 
-            graphLinks = [];             //create empty array for links (graph edges)
+function visualizeData(data){
 
-        graphNodes.splice(0,1,{"name": hub, "activity": 0});  //Insert the graph's central node element
+    var graphNodes  = [],          //save JSON objects 
+        nodeTracker = {},
+        graphLinks  = [];         //create empty array for links (graph edges)
 
-        for (i=0;i<graphNodes.length;i++){                                             //link all nodes to the central hub
-            graphNodes[0].activity = graphNodes[0].activity + graphNodes[i].activity;  //and give hub activity count = to sum of other node's activity counts
-            graphLinks[i] = {"source": graphNodes[0], "target": graphNodes[i]};        //enter links into link array
+    var j = 0;
+    $.each(data, function(key,val){
+        if (val.country){
+            if (!(nodeTracker.hasOwnProperty(val.country))){
+                nodeTracker[(val.country)] = [j];
+                graphNodes[j] = ({"name": val.country, "activity": 1});
+                j += 1;
+            }
+            else{
+                graphNodes[nodeTracker[val.country]].activity += 1;
+            }
         }
+    })
 
-        force                  
-            .nodes(graphNodes) //assign graphNodes as node data
-            .links(graphLinks) //assign graphLinks as link data
-            .start();          //create d3 objects used to generate visualization
-            
-        var links = vis.selectAll("line.link").data(graphLinks); //create variable which identifies all link elements
-        var nodes = vis.selectAll("g.node").data(graphNodes);    //create variable which identifies all node elements
+    graphNodes.splice(0,0,{"name": hub, "activity": 0});  //Insert the graph's central node element
 
-        links
-          .enter().append("svg:line")    //create a DOM object for each link
-            .attr("class", "link")
-            .attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
+    for (i=1;i<graphNodes.length;i++){                                             //link all nodes to the central hub, start at 1 to avoid linking hub to self
+        graphNodes[0].activity = graphNodes[0].activity + graphNodes[i].activity;  //and give hub activity count = to sum of other node's activity counts
+        graphLinks[i-1] = {"source": graphNodes[0], "target": graphNodes[i]};        //enter links into link array
+    }
 
-        links
-            .transition();   //animate the transition for links between graphs
-
-        links
-            .exit()         //remove links without values
-            .remove();
-
-
-        nodes
-          .enter().append("svg:g")  //create a DOM object for each node
-            .attr("class", "node")
-            .call(force.drag);
-
-        nodes
-            .transition();  //animate the transition for nodes between graphs
-
-        nodes
-            .exit()     //remove nodes without values
-            .remove();
+    force        
+        .nodes(graphNodes) //assign graphNodes as node data
+        .links(graphLinks) //assign graphLinks as link data
+        .linkDistance(function(d) { return (d.source.activity+d.target.activity)*5/7 })
+        .start();          //create d3 objects used to generate visualization
         
-        nodes
-           .selectAll("image.circle") //remove all previously drawn node images
-           .remove();
+    var links = vis.selectAll("line.link").data(graphLinks); //create variable which identifies all link elements
+    var nodes = vis.selectAll("g.node").data(graphNodes);    //create variable which identifies all node elements
 
-        nodes
-            .selectAll("title")  //remove titles
-            .remove();
+    links
+      .enter().append("svg:line")    //create a DOM object for each link
+        .attr("class", "link")
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    links
+        .transition();   //animate the transition for links between graphs
+
+    links
+        .exit()         //remove links without values
+        .remove();
 
 
-        nodes
-            .append("svg:image") //insert images for all nodes currently present
-                .attr("class", "circle")
-                .attr("xlink:href", function(d) { return "imgs/"+d.name; })
-                .attr("x"  ,        function(d) { return -d.activity/2;  })
-                .attr("y"  ,        function(d) { return -d.activity/2;  })
-                .attr("height",     function(d) { return  d.activity;    })
-                .attr("width",      function(d) { return  d.activity;    });
+    nodes
+      .enter().append("svg:g")  //create a DOM object for each node
+        .attr("class", "node")
+        .call(force.drag);
 
-        nodes //assign new titles to graph elements
-            .append("title")
-                .text(function(d) { return d.name+'\n'+d.activity+' participants'; });
-        
-             })
+    nodes
+        .transition();  //animate the transition for nodes between graphs
+
+    nodes
+        .exit()     //remove nodes without values
+        .remove();
+    
+    nodes
+       .selectAll("image.circle") //remove all previously drawn node images
+       .remove();
+
+    nodes
+        .selectAll("title")  //remove titles
+        .remove();
+
+
+    nodes
+        .append("svg:image") //insert images for all nodes currently present
+            .attr("class", "circle")
+            .attr("xlink:href", function(d) { return "imgs/flags/"+d.name+".png"; }) //"http://www.translationhub.com/resources/world-flags/flags/"+d.name+".png"; })
+            .attr("x"  ,        function(d) { return -(25+d.activity/2)/2;  })
+            .attr("y"  ,        function(d) { return -(25+d.activity/2)/2;  })
+            .attr("height",     function(d) { return  25+d.activity/2;      })
+            .attr("width",      function(d) { return  25+d.activity/2;      });
+
+    nodes //assign new titles to graph elements
+        .append("title")
+            .text(function(d) { return d.name+'\n'+d.activity+' participants'; });
+    
 };
-visualizeData(rawData1);
-setTimeout(function() { visualizeData(rawData2) }, 5000);

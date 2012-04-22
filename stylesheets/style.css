@@ -5,11 +5,6 @@ body {
   overflow: hidden;
 }
 
-
-.svg {
-  background-image: url('../imgs/Space.png');
-}
-
 .container {
   height: 1100px;
   width: 910px;
